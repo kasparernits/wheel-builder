@@ -1,0 +1,46 @@
+
+<html>
+<head>
+    <title>Hello Wheel Builder!</title>
+    <script type="text/javascript" src="js/two.js"></script>
+    <script type="text/javascript" src="js/underscore.js"></script>
+    <script type="text/javascript" src="js/backbone.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+
+<div id="workshop"></div>
+
+<script type="text/javascript">
+    
+    var y = 350;
+    var x = 350;
+    var r = 311; // 622 ÷ 2 mm
+
+    var elem = document.getElementById('workshop');
+    var params = { fullscreen: true}
+    var two = new Two(params).appendTo(elem);
+    
+    var rim = two.makeCircle(y, x, r);
+    var hub = two.makeCircle(y, x, 20);
+
+    rim.fill = 'white';
+    rim.stroke = 'black';
+    rim.linewidth = 15;
+
+    hub.fill = 'white';
+    hub.stroke = 'black';
+    hub.linewidth = 8;
+
+    var spoke = two.makeLine(350, 331, 350, 32);
+
+    spoke.linewidth = 2;
+    spoke.stroke = 'red';   
+
+    two.update();
+
+</script>
+
+</body>
+
+</html>
