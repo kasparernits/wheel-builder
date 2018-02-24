@@ -1,82 +1,17 @@
 
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Hello Wheel Builder!</title>
+    <title>Hello Builder!</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="js/two.js"></script>
     <script type="text/javascript" src="js/underscore.js"></script>
     <script type="text/javascript" src="js/backbone.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
 </head>
 <body>
 
 <div id="workshop"></div>
-
-<script type="text/javascript">
-    
-    // Center point
-    var y = 350;
-    var x = 350;
-
-    // 8bar Super Felge
-    var rimDiameter = 622; 
-    var rimHeigth = 30;
-
-    // Sturmey-Archer HBT 30 Front
-    var hubFlangeWidth = 70.6;
-
-    var elem = document.getElementById('workshop');
-    var params = { fullscreen: true}
-    var two = new Two(params).appendTo(elem);
-    
-    var rim = drawRim(two, y, x, rimDiameter, rimHeigth);
-    var hub = drawHub(two, y, x, hubFlangeWidth);
-
-    var spoke1 = drawSpoke(two, x, getY1(), x, getY2());
-    var n1 = drawNipple(two, x, getY1(), x, getY2(), 14);
-
-    two.update();
-
-    function getY1(){
-        return y - hubFlangeWidth / 2;
-    }
-
-    function getY2(){
-        return y - rimDiameter / 2;
-    }
-
-    function drawSpoke(two, x1, y1, x2, y2){
-        var spoke = two.makeLine(x1, y1, x2, y2);
-        spoke.linewidth = 2;
-        spoke.stroke = 'red';
-        var spokeEnd = two.makeCircle(x1, y1, 3);
-        spokeEnd.fill = 'red';
-        spokeEnd.stroke = 'red';
-        return spoke; // is this required?
-    }
-
-    function drawNipple(two, x1, y1, x2, y2, length){
-        var nipple = two.makeLine(x1, y1 - 250, x2, y2); // to fix
-        nipple.linewidth = 5;
-        nipple.stroke = 'red';
-    }
-
-    function drawRim(two, y, x, radius, heigth){
-        var rim = two.makeCircle(y, x, radius / 2);
-        rim.fill = 'white';
-        rim.stroke = 'black';
-        rim.linewidth = heigth;
-        return rim;
-    }
-
-    function drawHub(two, y, x, flangeWidth){
-        var hub = two.makeCircle(y, x, flangeWidth / 2)
-        hub.fill = 'white';
-        hub.stroke = 'black';
-        hub.linewidth = 8;
-        return hub;
-    }
-
-</script>
 
 </body>
 
