@@ -1,80 +1,92 @@
-window.onload = function(){
+window.onload = function () {
 
-  // Center point
-   var y = 350;
-   var x = 350;
+    var center = { x: 350, y: 350 };
 
-   // 8bar Super Felge
-   var rimDiameter = 622; 
-   var rimHeigth = 30;
+    // Center point
+    var y = 350;
+    var x = 350;
 
-   // Sturmey-Archer HBT 30 Front
-   var hubFlangeWidth = 70.6;
+    // 8bar Super Felge
+    var rimDiameter = 622;
+    var rimHeigth = 30;
+    var rimNumOfHoles = 32;
 
-   var nippleLength = 14;
+    // Sturmey-Archer HBT 30 Front Hub
+    var hubFlangeWidth = 70.6;
+    var hubRadius = hubFlangeWidth / 2;
+    var hubNumOfSpokeHoles = 16;
 
-   var elem = document.getElementById('workshop');
-   var params = { fullscreen: true}
-   var two = new Two(params).appendTo(elem);
-   
-   var rim = drawRim(two, y, x, rimDiameter, rimHeigth);
-   var hub = drawHub(two, y, x, hubFlangeWidth);
+    // DT Swiss Nipple
+    var nippleLength = 14;
+    var nippleWidth = 4;
 
-   var spoke1 = drawSpoke(two, x, getY1(), x, getY2());
-   
-   two.update();
+    // DT Swiss Competition
+    var spokeWidth = 2;
 
-   function getY1(){
-        return y - hubFlangeWidth / 2;
-   }
+    var elem = document.getElementById('workshop');
+    var params = { fullscreen: true }
+    var two = new Two(params).appendTo(elem);
 
-   function getY2(){
-        return y - rimDiameter / 2;
-   }
+    var rim = drawRim(two, center.x, center.y, rimDiameter, rimHeigth);
+    var hub = drawHub(two, center.x, center.y, hubFlangeWidth);
+    var spoke1 = drawSpoke(two, center.x, getY1(), center.x, getY2());
 
-   function drawSpoke(two, x1, y1, x2, y2){
+    two.update();
+
+    function getY1() {
+        return center.y - hubFlangeWidth / 2;
+    }
+
+    function getY2() {
+        return center.y - rimDiameter / 2;
+    }
+
+    function drawSpoke(two, x1, y1, x2, y2) {
         var spoke = two.makeLine(x1, y1, x2, y2);
-        spoke.linewidth = 2;
+        spoke.linewidth = spokeWidth;
         spoke.stroke = 'red';
         var spokeEnd = two.makeCircle(x1, y1, 3);
         spokeEnd.fill = 'red';
         spokeEnd.stroke = 'red';
-        var nipple = two.makeLine(x1, (y - rimDiameter / 2) + nippleLength, x2, y2);
-        nipple.linewidth = 5;
+        var nipple = two.makeLine(x1, (center.y - rimDiameter / 2) + nippleLength, x2, y2);
+        nipple.linewidth = nippleWidth;
         nipple.stroke = 'red';
-   }
+    }
 
-   function drawRim(two, y, x, radius, heigth){
+    function drawRim(two, x, y, radius, heigth) {
         var rim = two.makeCircle(y, x, radius / 2);
         rim.fill = 'white';
         rim.stroke = 'black';
         rim.linewidth = heigth;
-        return rim;
-   }
 
-    function drawHub(two, y, x, flangeWidth){
-        var hub = two.makeCircle(y, x, flangeWidth / 2)
+        for (var i = 1; i <= rimNumOfHoles; i++) {
+            drawPoint(rimDiameter / 2, i, rimNumOfHoles);
+        }
+
+        return rim;
+    }
+
+    function drawHub(two, x, y, flangeWidth) {
+        var hub = two.makeCircle(x, y, flangeWidth / 2)
         hub.fill = 'white';
         hub.stroke = 'black';
         hub.linewidth = 8;
 
-        // Draw spoke holes, TBD
-
-        var r = flangeWidth / 2;
-
-        two.makeCircle(y + r, x, 2);
-
-        for(i = 1; i <= 1; i++){
-
-            var newX = r * Math.cos(i) + x;
-            var newY = r * Math.sin(i) + y;
-            
-            two.makeCircle(newY, newX, 2);
-
+        for (var i = 1; i <= hubNumOfSpokeHoles; i++) {
+            drawPoint(hubRadius, i, hubNumOfSpokeHoles);
         }
 
         return hub;
-   }
+    }
+
+    function drawPoint(R, currentPoint, numOfPoints) {
+
+        var theta = ((Math.PI * 2) / numOfPoints);
+        var angle = (theta * currentPoint);
+        var newX = R * Math.cos(angle) + x;
+        var newY = R * Math.sin(angle) + y;
+        two.makeCircle(newX, newY, 2);
+    }
 
 }
 
