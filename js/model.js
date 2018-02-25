@@ -5,7 +5,7 @@ window.onload = function () {
     // Center point of the rim
     var y = 350;
     var x = 350;
-    
+
     // 8bar Super Felge
     var rimDiameter = 622;
     var rimHeigth = 30;
@@ -34,7 +34,7 @@ window.onload = function () {
 
     var spokesRow1 = drawSpokes(two, 750, 320, 1, 16, 'black');
     var spokesRow2 = drawSpokes(two, 750, 650, 17, 32, 'black');
-    
+
     two.update();
 
     function getY1() {
@@ -56,13 +56,13 @@ window.onload = function () {
         group.fill = color;
     }
 
-    function drawSpokes(two, startX, startY, from, to, color){
-        for (var i=from; i <= to; i++){
+    function drawSpokes(two, startX, startY, from, to, color) {
+        for (var i = from; i <= to; i++) {
             drawSpoke(two, startX, startY, spokeLength, color);
             var text = two.makeText(i, startX, startY + 20, {
                 alignment: 'center'
-              });
-              startX = startX + 18;
+            });
+            startX = startX + 18;
         }
     }
 
@@ -76,7 +76,7 @@ window.onload = function () {
             drawPointsOnCircle(rimDiameter / 2, i, rimNumOfHoles, 2);
         }
     }
- 
+
     function drawHub(two, x, y, flangeWidth) {
         var hub = two.makeCircle(x, y, flangeWidth / 2)
         hub.fill = 'white';
