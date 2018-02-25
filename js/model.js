@@ -30,8 +30,11 @@ window.onload = function () {
 
     var rim = drawRim(two, center.x, center.y, rimDiameter, rimHeigth);
     var hub = drawHub(two, center.x, center.y, hubFlangeWidth);
-    var spoke1 = drawSpoke(two, center.x, getY1(), center.x, getY2());
+    var spoke1 = drawSpoke(two, center.x, getY1(), spokeLength, 'red');
 
+    var spokesRow1 = drawSpokes(two, 750, 320, 1, 16, 'black');
+    var spokesRow2 = drawSpokes(two, 750, 650, 17, 32, 'black');
+    
     two.update();
 
     function getY1() {
@@ -42,16 +45,25 @@ window.onload = function () {
         return center.y - rimDiameter / 2;
     }
 
-    function drawSpoke(two, x1, y1, x2, y2) {
-        var spoke = two.makeLine(x1, y1, x2, y2);
+    function drawSpoke(two, x, y, length, color) {
+        var spoke = two.makeLine(x, y, x, y - length);
         spoke.linewidth = spokeWidth;
-        spoke.stroke = 'red';
-        var spokeEnd = two.makeCircle(x1, y1, 3);
-        spokeEnd.fill = 'red';
-        spokeEnd.stroke = 'red';
-        var nipple = two.makeLine(x1, (center.y - rimDiameter / 2) + nippleLength, x2, y2);
+        var spokeEnd = two.makeCircle(x, y, 3);
+        var nipple = two.makeLine(x, y - length, x, (y - length) + nippleLength);
         nipple.linewidth = nippleWidth;
-        nipple.stroke = 'red';
+        var group = two.makeGroup(spoke, spokeEnd, nipple);
+        group.stroke = color;
+        group.fill = color;
+    }
+
+    function drawSpokes(two, startX, startY, from, to, color){
+        for (var i=from; i <= to; i++){
+            drawSpoke(two, startX, startY, spokeLength, color);
+            var text = two.makeText(i, startX, startY + 20, {
+                alignment: 'center'
+              });
+              startX = startX + 18;
+        }
     }
 
     function drawRim(two, x, y, radius, heigth) {
