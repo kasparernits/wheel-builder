@@ -22,6 +22,7 @@ window.onload = function () {
 
     // DT Swiss Competition
     var spokeWidth = 2;
+    var spokeLength = 280;
 
     var elem = document.getElementById('workshop');
     var params = { fullscreen: true }
