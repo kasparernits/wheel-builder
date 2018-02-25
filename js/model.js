@@ -2,10 +2,10 @@ window.onload = function () {
 
     var center = { x: 350, y: 350 };
 
-    // Center point
+    // Center point of the rim
     var y = 350;
     var x = 350;
-
+    
     // 8bar Super Felge
     var rimDiameter = 622;
     var rimHeigth = 30;
@@ -16,13 +16,13 @@ window.onload = function () {
     var hubRadius = hubFlangeWidth / 2;
     var hubNumOfSpokeHoles = 16;
 
+    // DT Swiss Competition Spoke
+    var spokeWidth = 2;
+    var spokeLength = 280;
+
     // DT Swiss Nipple
     var nippleLength = 14;
     var nippleWidth = 4;
-
-    // DT Swiss Competition
-    var spokeWidth = 2;
-    var spokeLength = 280;
 
     var elem = document.getElementById('workshop');
     var params = { fullscreen: true }
@@ -66,19 +66,17 @@ window.onload = function () {
         }
     }
 
-    function drawRim(two, x, y, radius, heigth) {
-        var rim = two.makeCircle(y, x, radius / 2);
+    function drawRim(two, x, y, rimDiameter, heigth) {
+        var rim = two.makeCircle(x, y, rimDiameter / 2);
         rim.fill = 'white';
         rim.stroke = 'black';
         rim.linewidth = heigth;
 
         for (var i = 1; i <= rimNumOfHoles; i++) {
-            drawPoint(rimDiameter / 2, i, rimNumOfHoles);
+            drawPointsOnCircle(rimDiameter / 2, i, rimNumOfHoles, 2);
         }
-
-        return rim;
     }
-
+ 
     function drawHub(two, x, y, flangeWidth) {
         var hub = two.makeCircle(x, y, flangeWidth / 2)
         hub.fill = 'white';
@@ -86,21 +84,18 @@ window.onload = function () {
         hub.linewidth = 8;
 
         for (var i = 1; i <= hubNumOfSpokeHoles; i++) {
-            drawPoint(hubRadius, i, hubNumOfSpokeHoles);
+            drawPointsOnCircle(hubRadius, i, hubNumOfSpokeHoles, 2);
         }
-
-        return hub;
     }
 
-    function drawPoint(R, currentPoint, numOfPoints) {
+    function drawPointsOnCircle(R, currentPoint, numOfPoints, size) {
 
         var theta = ((Math.PI * 2) / numOfPoints);
         var angle = (theta * currentPoint);
-        var newX = R * Math.cos(angle) + x;
-        var newY = R * Math.sin(angle) + y;
-        two.makeCircle(newX, newY, 2);
+        var newX = R * Math.cos(angle) + center.x;
+        var newY = R * Math.sin(angle) + center.y;
+        two.makeCircle(newX, newY, size);
     }
 
 }
-
 
