@@ -2,6 +2,16 @@ window.onload = function () {
 
     var center = { x: 350, y: 350 };
 
+    var myHub = new Object();
+    myHub.name = 'SturmeyArcherHBT30';
+    myHub.flangeWidth = 70.6;
+    myHub.numOfSpokeHoles = 32;
+
+    function draw(o, x, y){
+
+        console.log('tbd...');
+    }
+
     // Center point of the rim
     var y = 350;
     var x = 350;
