@@ -2,10 +2,43 @@ window.onload = function () {
 
     var center = { x: 350, y: 350 };
 
-    var myHub = new Object();
-    myHub.name = 'SturmeyArcherHBT30';
-    myHub.flangeWidth = 70.6;
-    myHub.numOfSpokeHoles = 32;
+    class spokeHole {
+        constructor(side, id, x, y){
+            this.side = side;
+            this.id = id;
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    class hub {
+        constructor(name,flangeWidth,numSpokeHoles){
+            this.name = name;
+            this.flangeWidth = flangeWidth;
+            this.numSpokeHoles = numSpokeHoles;
+            this.spokeHoles = [];
+            this.addSpokeHole = function (newObject) {
+                this.spokeHoles.push(newObject);
+            };
+        }
+
+        calcSpokeHoleCoords(thisHole) {
+            var theta = ((Math.PI * 2) / this.numSpokeHoles);
+            var angle = (theta * thisHole);
+            var newX = (this.flangeWidth / 2) * Math.cos(angle) + center.x; // dont like this global variable, to fix later
+            var newY = (this.flangeWidth / 2) * Math.sin(angle) + center.y;
+            return {newX,newY};
+        }
+
+    }
+
+    var hbt30 = new hub('hbt30',70.6,16);
+
+    for(i=1;i<=hbt30.numSpokeHoles;i++){
+        hbt30.addSpokeHole(new spokeHole('a',i,hbt30.calcSpokeHoleCoords(i).newX, hbt30.calcSpokeHoleCoords(i).newY));
+    }    
+
+    console.log(hbt30); 
 
     function draw(o, x, y){
 
@@ -38,8 +71,12 @@ window.onload = function () {
     var params = { fullscreen: true }
     var two = new Two(params).appendTo(elem);
 
+    for(i=1;i<=hbt30.numSpokeHoles-1;i++){ // to fix
+        two.makeCircle(hbt30.spokeHoles[i].x, hbt30.spokeHoles[i].y, 3).fill='red';
+    }
+
     var rim = drawRim(two, center.x, center.y, rimDiameter, rimHeigth);
-    var hub = drawHub(two, center.x, center.y, hubFlangeWidth);
+    var myHub = drawHub(two, center.x, center.y, hubFlangeWidth);
     var spoke1 = drawSpoke(two, center.x, getY1(), spokeLength, 'red');
 
     var spokesRow1 = drawSpokes(two, 750, 320, 1, 16, 'black');
