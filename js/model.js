@@ -33,11 +33,10 @@ window.onload = function () {
     }
 
     var hbt30 = new circle('hbt30',70.6,10,16);
+    var rim = new circle('8bar super',622,30,16); // actual num of spoke holes is 32, fix later
 
     for(i=0;i<=hbt30.numOfHoles;i++)
         hbt30.addHole(new hole(i,hbt30.calcHoleCoords(i).newX, hbt30.calcHoleCoords(i).newY));
-
-    var rim = new circle('8bar super',622,30,32);
 
     for(i=0;i<=rim.numOfHoles;i++)
         rim.addHole(new hole(i,rim.calcHoleCoords(i).newX, rim.calcHoleCoords(i).newY));
@@ -45,16 +44,6 @@ window.onload = function () {
     // Center point of the rim
     var y = 350;
     var x = 350;
-
-    // 8bar Super Felge
-    var rimDiameter = 622;
-    var rimHeigth = 30;
-    var rimNumOfHoles = 32;
-
-    // Sturmey-Archer HBT 30 Front Hub
-    var hubFlangeWidth = 70.6;
-    var hubRadius = hubFlangeWidth / 2;
-    var hubNumOfSpokeHoles = 16;
 
     // DT Swiss Competition Spoke
     var spokeWidth = 2;
@@ -68,19 +57,31 @@ window.onload = function () {
     var params = { fullscreen: true }
     var two = new Two(params).appendTo(elem);
 
+    drawCircle(two, center.x, center.y, rim);
     drawCircle(two, center.x, center.y, hbt30);
 
+    drawLine(two, hbt30, rim);
+
     //var spoke1 = drawSpoke(two, center.x, getY1(), spokeLength, 'red');
-    //var spokesRow1 = drawSpokes(two, 750, 320, 1, 16, 'black');
-    //var spokesRow2 = drawSpokes(two, 750, 650, 17, 32, 'black');
+    var spokesRow1 = drawSpokes(two, 750, 320, 1, 16, 'black');
+    var spokesRow2 = drawSpokes(two, 750, 650, 17, 32, 'black');
 
     two.update();
 
     function drawCircle(two, x, y, circle) {
-        var hub = two.makeCircle(x, y, circle.diameter);
-        hub.fill = 'white';
-        hub.stroke = 'black';
-        hub.linewidth = circle.width;
+        var c = two.makeCircle(x, y, circle.diameter / 2);
+        c.fill = 'white';
+        c.stroke = 'black';
+        c.linewidth = circle.width;
+        for(i=0;i<=circle.numOfHoles;i++){
+            two.makeCircle(circle.holes[i].x,circle.holes[i].y,3);
+        }
+    }
+
+    function drawLine(two, circle1, circle2) {
+        for(i=1;i<=circle1.numOfHoles;i++){
+            two.makeLine(circle1.holes[i].x, circle1.holes[i].y, circle2.holes[i].x, circle2.holes[i].y);
+        }
     }
 
     function getY1() {
