@@ -1,5 +1,13 @@
 window.onload = function () {
 
+    var pattern = {
+        name: '3cross',
+        numOfSpokes: 2,
+        // tbd: convert s to array
+        s1 : { h: 1, r: 1},
+        s2 : { h: 4, r: 4}
+    }
+
     const center = { x: 350, y: 350 };
 
     class hole {
@@ -33,7 +41,7 @@ window.onload = function () {
     }
 
     var hbt30 = new circle('hbt30',70.6,10,16);
-    var rim = new circle('8bar super',622,30,16); // actual num of spoke holes is 32, fix later
+    var rim = new circle('8bar super',622,30,32);
 
     for(i=0;i<=hbt30.numOfHoles;i++)
         hbt30.addHole(new hole(i,hbt30.calcHoleCoords(i).newX, hbt30.calcHoleCoords(i).newY));
@@ -41,15 +49,8 @@ window.onload = function () {
     for(i=0;i<=rim.numOfHoles;i++)
         rim.addHole(new hole(i,rim.calcHoleCoords(i).newX, rim.calcHoleCoords(i).newY));
 
-    // Center point of the rim
-    var y = 350;
-    var x = 350;
-
-    // DT Swiss Competition Spoke
     var spokeWidth = 2;
     var spokeLength = 280;
-
-    // DT Swiss Nipple
     var nippleLength = 14;
     var nippleWidth = 4;
 
@@ -62,7 +63,6 @@ window.onload = function () {
 
     drawLine(two, hbt30, rim);
 
-    //var spoke1 = drawSpoke(two, center.x, getY1(), spokeLength, 'red');
     var spokesRow1 = drawSpokes(two, 750, 320, 1, 16, 'black');
     var spokesRow2 = drawSpokes(two, 750, 650, 17, 32, 'black');
 
@@ -79,17 +79,8 @@ window.onload = function () {
     }
 
     function drawLine(two, circle1, circle2) {
-        for(i=1;i<=circle1.numOfHoles;i++){
-            two.makeLine(circle1.holes[i].x, circle1.holes[i].y, circle2.holes[i].x, circle2.holes[i].y);
-        }
-    }
-
-    function getY1() {
-        return center.y - hubFlangeWidth / 2;
-    }
-
-    function getY2() {
-        return center.y - rimDiameter / 2;
+        two.makeLine(circle1.holes[pattern.s1.h].x, circle1.holes[pattern.s1.h].y, circle2.holes[pattern.s1.r].x, circle2.holes[pattern.s1.r].y);
+        two.makeLine(circle1.holes[pattern.s2.h].x, circle1.holes[pattern.s2.h].y, circle2.holes[pattern.s2.r].x, circle2.holes[pattern.s2.r].y);
     }
 
     function drawSpoke(two, x, y, length, color) {
