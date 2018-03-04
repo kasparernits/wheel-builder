@@ -1,13 +1,19 @@
 window.onload = function () {
 
-    var pattern = {
-        name: '3cross',
-        numOfSpokes: 2,
-        // tbd: convert s to array
-        s1 : { h: 1, r: 1},
-        s2 : { h: 4, r: 4}
-    }
+    // 3 cross pattern
+    var p = [
+        {id : 0, h: 12, r: 0},
+        {id : 1, h: 14, r: 1},
+        {id : 2, h: 0, r: 4},
+        {id : 3, h: 2, r: 8},
+        {id : 4, h: 4, r: 12},
+        {id : 5, h: 6, r: 16},
+        {id : 6, h: 8, r: 20},
+        {id : 7, h: 10, r: 24},
+        {id : 8, h: 12, r: 28}
 
+    ];
+    
     const center = { x: 350, y: 350 };
 
     class hole {
@@ -19,7 +25,8 @@ window.onload = function () {
     }
 
     class circle {
-        constructor(name, diameter, width, numOfHoles){
+        constructor(type, name, diameter, width, numOfHoles){
+            this.type = type;
             this.name = name;
             this.diameter = diameter;
             this.width = width;
@@ -40,13 +47,13 @@ window.onload = function () {
 
     }
 
-    var hbt30 = new circle('hbt30',70.6,10,16);
-    var rim = new circle('8bar super',622,30,32);
+    var hbt30 = new circle('hub','hbt30',70.6,10,16);
+    var rim = new circle('rim','8bar super',622,30,32);
 
-    for(i=0;i<=hbt30.numOfHoles;i++)
+    for(i=0;i<hbt30.numOfHoles;i++)
         hbt30.addHole(new hole(i,hbt30.calcHoleCoords(i).newX, hbt30.calcHoleCoords(i).newY));
 
-    for(i=0;i<=rim.numOfHoles;i++)
+    for(i=0;i<rim.numOfHoles;i++)
         rim.addHole(new hole(i,rim.calcHoleCoords(i).newX, rim.calcHoleCoords(i).newY));
 
     var spokeWidth = 2;
@@ -61,7 +68,8 @@ window.onload = function () {
     drawCircle(two, center.x, center.y, rim);
     drawCircle(two, center.x, center.y, hbt30);
 
-    drawLine(two, hbt30, rim);
+    for(i=0;i<p.length;i++)
+        drawLine(two, hbt30, rim, i);
 
     var spokesRow1 = drawSpokes(two, 750, 320, 1, 16, 'black');
     var spokesRow2 = drawSpokes(two, 750, 650, 17, 32, 'black');
@@ -73,14 +81,22 @@ window.onload = function () {
         c.fill = 'white';
         c.stroke = 'black';
         c.linewidth = circle.width;
-        for(i=0;i<=circle.numOfHoles;i++){
-            two.makeCircle(circle.holes[i].x,circle.holes[i].y,3);
+        for(i=0;i<circle.numOfHoles;i++){
+            if(i==0 && circle.type == 'rim'){            
+                var newX = (circle.diameter / 2) * Math.cos(0.07) + center.x;
+                var newY = (circle.diameter / 2) * Math.sin(0.07) + center.y;
+                two.makeCircle(newX,newY,6);
+                two.makeCircle(circle.holes[i].x,circle.holes[i].y,3).fill='red';
+            }
+            else if ((i==0 || i==8) && circle.type == 'hub')
+                two.makeCircle(circle.holes[i].x,circle.holes[i].y,3).fill='red';
+            else
+                two.makeCircle(circle.holes[i].x,circle.holes[i].y,3);
         }
     }
 
-    function drawLine(two, circle1, circle2) {
-        two.makeLine(circle1.holes[pattern.s1.h].x, circle1.holes[pattern.s1.h].y, circle2.holes[pattern.s1.r].x, circle2.holes[pattern.s1.r].y);
-        two.makeLine(circle1.holes[pattern.s2.h].x, circle1.holes[pattern.s2.h].y, circle2.holes[pattern.s2.r].x, circle2.holes[pattern.s2.r].y);
+    function drawLine(two, circle1, circle2, i) {
+        two.makeLine(circle1.holes[p[i].h].x, circle1.holes[p[i].h].y, circle2.holes[p[i].r].x, circle2.holes[p[i].r].y);
     }
 
     function drawSpoke(two, x, y, length, color) {
