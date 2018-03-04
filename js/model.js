@@ -2,16 +2,24 @@ window.onload = function () {
 
     // 3 cross pattern
     var p = [
-        {id : 0, h: 12, r: 0},
-        {id : 1, h: 14, r: 1},
-        {id : 2, h: 0, r: 4},
-        {id : 3, h: 2, r: 8},
-        {id : 4, h: 4, r: 12},
-        {id : 5, h: 6, r: 16},
-        {id : 6, h: 8, r: 20},
-        {id : 7, h: 10, r: 24},
-        {id : 8, h: 12, r: 28}
+        {id : 0, h: 13, r: 31},
+        {id : 1, h: 4, r: 1},
+        {id : 2, h: 15, r: 3},
+        {id : 3, h: 1, r: 7},
+        {id : 4, h: 3, r: 11},
+        {id : 5, h: 5, r: 15},
+        {id : 6, h: 7, r: 19},
+        {id : 7, h: 9, r: 23},
+        {id : 8, h: 11, r: 27},
 
+        {id : 10, h: 2, r: 29},
+        {id :11, h: 0, r: 25},
+        {id : 12, h: 14, r: 21},
+        {id : 13, h: 12, r: 17},
+        {id : 14, h: 10, r: 13},
+        {id : 15, h: 8, r: 9}
+
+        // first side done, flip over ...
     ];
     
     const center = { x: 350, y: 350 };
@@ -51,10 +59,10 @@ window.onload = function () {
     var rim = new circle('rim','8bar super',622,30,32);
 
     for(i=0;i<hbt30.numOfHoles;i++)
-        hbt30.addHole(new hole(i,hbt30.calcHoleCoords(i).newX, hbt30.calcHoleCoords(i).newY));
-
+        hbt30.addHole(new hole(i,hbt30.calcHoleCoords(i-hbt30.numOfHoles/4).newX, hbt30.calcHoleCoords(i-hbt30.numOfHoles/4).newY));
+    
     for(i=0;i<rim.numOfHoles;i++)
-        rim.addHole(new hole(i,rim.calcHoleCoords(i).newX, rim.calcHoleCoords(i).newY));
+        rim.addHole(new hole(i,rim.calcHoleCoords(i-rim.numOfHoles/4).newX, rim.calcHoleCoords(i-rim.numOfHoles/4).newY));
 
     var spokeWidth = 2;
     var spokeLength = 280;
@@ -65,7 +73,7 @@ window.onload = function () {
     var params = { fullscreen: true }
     var two = new Two(params).appendTo(elem);
 
-    drawCircle(two, center.x, center.y, rim);
+    var r = drawCircle(two, center.x, center.y, rim);
     drawCircle(two, center.x, center.y, hbt30);
 
     for(i=0;i<p.length;i++)
@@ -82,13 +90,7 @@ window.onload = function () {
         c.stroke = 'black';
         c.linewidth = circle.width;
         for(i=0;i<circle.numOfHoles;i++){
-            if(i==0 && circle.type == 'rim'){            
-                var newX = (circle.diameter / 2) * Math.cos(0.07) + center.x;
-                var newY = (circle.diameter / 2) * Math.sin(0.07) + center.y;
-                two.makeCircle(newX,newY,6);
-                two.makeCircle(circle.holes[i].x,circle.holes[i].y,3).fill='red';
-            }
-            else if ((i==0 || i==8) && circle.type == 'hub')
+            if ((i==0 || i==circle.numOfHoles/2))
                 two.makeCircle(circle.holes[i].x,circle.holes[i].y,3).fill='red';
             else
                 two.makeCircle(circle.holes[i].x,circle.holes[i].y,3);
