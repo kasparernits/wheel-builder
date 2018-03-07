@@ -1,5 +1,27 @@
 window.onload = function () {
 
+    // 3 cross pattern
+    var p = [
+        {id : 0, h: 13, r: 31},
+        {id : 1, h: 4, r: 1},
+        {id : 2, h: 15, r: 3},
+        {id : 3, h: 1, r: 7},
+        {id : 4, h: 3, r: 11},
+        {id : 5, h: 5, r: 15},
+        {id : 6, h: 7, r: 19},
+        {id : 7, h: 9, r: 23},
+        {id : 8, h: 11, r: 27},
+
+        {id : 10, h: 2, r: 29},
+        {id :11, h: 0, r: 25},
+        {id : 12, h: 14, r: 21},
+        {id : 13, h: 12, r: 17},
+        {id : 14, h: 10, r: 13},
+        {id : 15, h: 8, r: 9}
+
+        // first side done, flip over ...
+    ];
+    
     const center = { x: 350, y: 350 };
 
     class hole {
@@ -11,7 +33,8 @@ window.onload = function () {
     }
 
     class circle {
-        constructor(name, diameter, width, numOfHoles){
+        constructor(type, name, diameter, width, numOfHoles){
+            this.type = type;
             this.name = name;
             this.diameter = diameter;
             this.width = width;
@@ -32,24 +55,17 @@ window.onload = function () {
 
     }
 
-    var hbt30 = new circle('hbt30',70.6,10,16);
-    var rim = new circle('8bar super',622,30,16); // actual num of spoke holes is 32, fix later
+    var hbt30 = new circle('hub','hbt30',70.6,10,16);
+    var rim = new circle('rim','8bar super',622,30,32);
 
-    for(i=0;i<=hbt30.numOfHoles;i++)
-        hbt30.addHole(new hole(i,hbt30.calcHoleCoords(i).newX, hbt30.calcHoleCoords(i).newY));
+    for(i=0;i<hbt30.numOfHoles;i++)
+        hbt30.addHole(new hole(i,hbt30.calcHoleCoords(i-hbt30.numOfHoles/4).newX, hbt30.calcHoleCoords(i-hbt30.numOfHoles/4).newY));
+    
+    for(i=0;i<rim.numOfHoles;i++)
+        rim.addHole(new hole(i,rim.calcHoleCoords(i-rim.numOfHoles/4).newX, rim.calcHoleCoords(i-rim.numOfHoles/4).newY));
 
-    for(i=0;i<=rim.numOfHoles;i++)
-        rim.addHole(new hole(i,rim.calcHoleCoords(i).newX, rim.calcHoleCoords(i).newY));
-
-    // Center point of the rim
-    var y = 350;
-    var x = 350;
-
-    // DT Swiss Competition Spoke
     var spokeWidth = 2;
     var spokeLength = 280;
-
-    // DT Swiss Nipple
     var nippleLength = 14;
     var nippleWidth = 4;
 
@@ -57,12 +73,12 @@ window.onload = function () {
     var params = { fullscreen: true }
     var two = new Two(params).appendTo(elem);
 
-    drawCircle(two, center.x, center.y, rim);
+    var r = drawCircle(two, center.x, center.y, rim);
     drawCircle(two, center.x, center.y, hbt30);
 
-    drawLine(two, hbt30, rim);
+    for(i=0;i<p.length;i++)
+        drawLine(two, hbt30, rim, i);
 
-    //var spoke1 = drawSpoke(two, center.x, getY1(), spokeLength, 'red');
     var spokesRow1 = drawSpokes(two, 750, 320, 1, 16, 'black');
     var spokesRow2 = drawSpokes(two, 750, 650, 17, 32, 'black');
 
@@ -73,23 +89,16 @@ window.onload = function () {
         c.fill = 'white';
         c.stroke = 'black';
         c.linewidth = circle.width;
-        for(i=0;i<=circle.numOfHoles;i++){
-            two.makeCircle(circle.holes[i].x,circle.holes[i].y,3);
+        for(i=0;i<circle.numOfHoles;i++){
+            if ((i==0 || i==circle.numOfHoles/2))
+                two.makeCircle(circle.holes[i].x,circle.holes[i].y,3).fill='red';
+            else
+                two.makeCircle(circle.holes[i].x,circle.holes[i].y,3);
         }
     }
 
-    function drawLine(two, circle1, circle2) {
-        for(i=1;i<=circle1.numOfHoles;i++){
-            two.makeLine(circle1.holes[i].x, circle1.holes[i].y, circle2.holes[i].x, circle2.holes[i].y);
-        }
-    }
-
-    function getY1() {
-        return center.y - hubFlangeWidth / 2;
-    }
-
-    function getY2() {
-        return center.y - rimDiameter / 2;
+    function drawLine(two, circle1, circle2, i) {
+        two.makeLine(circle1.holes[p[i].h].x, circle1.holes[p[i].h].y, circle2.holes[p[i].r].x, circle2.holes[p[i].r].y);
     }
 
     function drawSpoke(two, x, y, length, color) {
