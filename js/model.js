@@ -1,7 +1,10 @@
 window.onload = function () {
 
+    var drawn = 0;
+
     // 3 cross pattern
     var p = [
+        // Side 1
         {id : 0, h: 13, r: 31},
         {id : 1, h: 4, r: 1},
         {id : 2, h: 15, r: 3},
@@ -12,14 +15,15 @@ window.onload = function () {
         {id : 7, h: 9, r: 23},
         {id : 8, h: 11, r: 27},
 
-        {id : 10, h: 2, r: 29},
-        {id :11, h: 0, r: 25},
-        {id : 12, h: 14, r: 21},
-        {id : 13, h: 12, r: 17},
-        {id : 14, h: 10, r: 13},
-        {id : 15, h: 8, r: 9}
+        {id : 9, h: 2, r: 29},
+        {id :10, h: 0, r: 25},
+        {id : 11, h: 14, r: 21},
+        {id : 12, h: 12, r: 17},
+        {id : 13, h: 10, r: 13},
+        {id : 14, h: 8, r: 9},
+        {id : 15, h: 6, r: 5},
 
-        // first side done, flip over ...
+        // Side 2 ...
     ];
     
     const center = { x: 350, y: 350 };
@@ -76,11 +80,10 @@ window.onload = function () {
     var r = drawCircle(two, center.x, center.y, rim);
     drawCircle(two, center.x, center.y, hbt30);
 
-    for(i=0;i<p.length;i++)
-        drawLine(two, hbt30, rim, i);
-
     var spokesRow1 = drawSpokes(two, 750, 320, 1, 16, 'black');
     var spokesRow2 = drawSpokes(two, 750, 650, 17, 32, 'black');
+
+    window.addEventListener("keydown", drawThem, false);
 
     two.update();
 
@@ -97,7 +100,15 @@ window.onload = function () {
         }
     }
 
-    function drawLine(two, circle1, circle2, i) {
+    function drawThem(e){
+        //for(i=0;i<p.length;i++)
+        if(drawn < p.length)
+            drawNewSpoke(two, hbt30, rim, drawn);
+        two.update();
+        drawn = drawn + 1;
+    }
+
+    function drawNewSpoke(two, circle1, circle2, i) {
         two.makeLine(circle1.holes[p[i].h].x, circle1.holes[p[i].h].y, circle2.holes[p[i].r].x, circle2.holes[p[i].r].y);
     }
 
