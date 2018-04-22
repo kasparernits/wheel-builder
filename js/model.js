@@ -1,6 +1,8 @@
 window.onload = function () {
 
     var drawn = 0;
+    // ugly, fix later (for coloring out drawn spokes)
+    var startx = 750, starty = 320;
 
     // 3 cross pattern
     var p = [
@@ -80,8 +82,8 @@ window.onload = function () {
     var r = drawCircle(two, center.x, center.y, rim);
     drawCircle(two, center.x, center.y, hbt30);
 
-    var spokesRow1 = drawSpokes(two, 750, 320, 1, 16, 'black');
-    var spokesRow2 = drawSpokes(two, 750, 650, 17, 32, 'black');
+    var spokesRow1 = drawUnusedSpokes(two, 750, 320, 1, 16, 'black');
+    var spokesRow2 = drawUnusedSpokes(two, 750, 650, 17, 32, 'black');
 
     window.addEventListener("keydown", drawThem, false);
 
@@ -99,20 +101,26 @@ window.onload = function () {
                 two.makeCircle(circle.holes[i].x,circle.holes[i].y,3);
         }
     }
-
+    
     function drawThem(e){
-        //for(i=0;i<p.length;i++)
-        if(drawn < p.length)
-            drawNewSpoke(two, hbt30, rim, drawn);
+        if(drawn < p.length){
+            drawNewSpoke(two, hbt30, rim, drawn,'blue');
+            drawUnusedSpoke(two, startx, starty, spokeLength, 'white');
+            startx = startx + 18;
+        }
         two.update();
         drawn = drawn + 1;
     }
 
-    function drawNewSpoke(two, circle1, circle2, i) {
-        two.makeLine(circle1.holes[p[i].h].x, circle1.holes[p[i].h].y, circle2.holes[p[i].r].x, circle2.holes[p[i].r].y);
+    function drawNewSpoke(two, circle1, circle2, i, color) {
+        var spoke = two.makeLine(circle1.holes[p[i].h].x, circle1.holes[p[i].h].y, circle2.holes[p[i].r].x, circle2.holes[p[i].r].y);
+        var nipple = two.makeCircle(circle1.holes[p[i].h].x,circle1.holes[p[i].h].y,4);
+        var group = two.makeGroup(spoke,nipple);
+        group.fill = color;
+        group.stroke = color;
     }
-
-    function drawSpoke(two, x, y, length, color) {
+ 
+    function drawUnusedSpoke(two, x, y, length, color) {
         var spoke = two.makeLine(x, y, x, y - length);
         spoke.linewidth = spokeWidth;
         var spokeEnd = two.makeCircle(x, y, 3);
@@ -123,13 +131,13 @@ window.onload = function () {
         group.fill = color;
     }
 
-    function drawSpokes(two, startX, startY, from, to, color) {
+    function drawUnusedSpokes(two, startX, startY, from, to, color) {
         for (var i = from; i <= to; i++) {
-            drawSpoke(two, startX, startY, spokeLength, color);
+            drawUnusedSpoke(two, startX, startY, spokeLength, color);
             var text = two.makeText(i, startX, startY + 20, {
                 alignment: 'center'
             });
-            startX = startX + 18;
+            startX = startX + 18; // move right by 18px
         }
     }
 
