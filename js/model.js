@@ -1,6 +1,7 @@
 window.onload = function () {
 
     var drawn = 0;
+    
     // ugly, fix later (for coloring out drawn spokes)
     var startx = 750, starty = 320;
 
@@ -61,31 +62,28 @@ window.onload = function () {
 
     }
 
-    var hbt30 = new circle('hub','hbt30',70.6,10,16);
+    var hub = new circle('hub','hbt30',70.6,10,16);
     var rim = new circle('rim','8bar super',622,30,32);
 
-    for(i=0;i<hbt30.numOfHoles;i++)
-        hbt30.addHole(new hole(i,hbt30.calcHoleCoords(i-hbt30.numOfHoles/4).newX, hbt30.calcHoleCoords(i-hbt30.numOfHoles/4).newY));
+    for(i=0;i<hub.numOfHoles;i++)
+        hub.addHole(new hole(i,hub.calcHoleCoords(i-hub.numOfHoles/4).newX, hub.calcHoleCoords(i-hub.numOfHoles/4).newY));
     
     for(i=0;i<rim.numOfHoles;i++)
         rim.addHole(new hole(i,rim.calcHoleCoords(i-rim.numOfHoles/4).newX, rim.calcHoleCoords(i-rim.numOfHoles/4).newY));
 
     var spokeWidth = 2;
     var spokeLength = 280;
-    var nippleLength = 14;
-    var nippleWidth = 4;
 
     var elem = document.getElementById('workshop');
     var params = { fullscreen: true }
     var two = new Two(params).appendTo(elem);
 
-    var r = drawCircle(two, center.x, center.y, rim);
-    drawCircle(two, center.x, center.y, hbt30);
+    drawCircle(two, center.x, center.y, rim);
+    drawCircle(two, center.x, center.y, hub);
+    drawUnusedSpokes(two, 750, 320, 1, 16, 'black');
+    drawUnusedSpokes(two, 750, 650, 17, 32, 'black');
 
-    var spokesRow1 = drawUnusedSpokes(two, 750, 320, 1, 16, 'black');
-    var spokesRow2 = drawUnusedSpokes(two, 750, 650, 17, 32, 'black');
-
-    window.addEventListener("keydown", drawThem, false);
+    window.addEventListener("keydown", addSpoke, false);
 
     two.update();
 
@@ -102,9 +100,9 @@ window.onload = function () {
         }
     }
     
-    function drawThem(e){
+    function addSpoke(e){
         if(drawn < p.length){
-            drawNewSpoke(two, hbt30, rim, drawn,'blue');
+            drawSpoke(two, hub, rim, drawn,'blue');
             drawUnusedSpoke(two, startx, starty, spokeLength, 'white');
             startx = startx + 18;
         }
@@ -112,10 +110,10 @@ window.onload = function () {
         drawn = drawn + 1;
     }
 
-    function drawNewSpoke(two, circle1, circle2, i, color) {
+    function drawSpoke(two, circle1, circle2, i, color) {
         var spoke = two.makeLine(circle1.holes[p[i].h].x, circle1.holes[p[i].h].y, circle2.holes[p[i].r].x, circle2.holes[p[i].r].y);
-        var nipple = two.makeCircle(circle1.holes[p[i].h].x,circle1.holes[p[i].h].y,4);
-        var group = two.makeGroup(spoke,nipple);
+        var spokeEnd = two.makeCircle(circle1.holes[p[i].h].x,circle1.holes[p[i].h].y,4);
+        var group = two.makeGroup(spoke,spokeEnd);
         group.fill = color;
         group.stroke = color;
     }
@@ -124,9 +122,7 @@ window.onload = function () {
         var spoke = two.makeLine(x, y, x, y - length);
         spoke.linewidth = spokeWidth;
         var spokeEnd = two.makeCircle(x, y, 3);
-        var nipple = two.makeLine(x, y - length, x, (y - length) + nippleLength);
-        nipple.linewidth = nippleWidth;
-        var group = two.makeGroup(spoke, spokeEnd, nipple);
+        var group = two.makeGroup(spoke, spokeEnd);
         group.stroke = color;
         group.fill = color;
     }
