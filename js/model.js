@@ -92,12 +92,8 @@ window.onload = function () {
         c.fill = 'white';
         c.stroke = 'black';
         c.linewidth = circle.width;
-        for(i=0;i<circle.numOfHoles;i++){
-            if ((i==0 || i==circle.numOfHoles/2))
-                two.makeCircle(circle.holes[i].x,circle.holes[i].y,3).fill='red';
-            else
-                two.makeCircle(circle.holes[i].x,circle.holes[i].y,3);
-        }
+        for(i=0;i<circle.numOfHoles;i++)
+            two.makeCircle(circle.holes[i].x,circle.holes[i].y,3);
     }
     
     function addSpoke(e){
