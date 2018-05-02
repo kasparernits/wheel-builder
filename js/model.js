@@ -1,7 +1,9 @@
 window.onload = function () {
 
     var drawn = 0;
-    
+    var spokes = [];
+    var unusedSpokes = [];
+
     // ugly, fix later (for coloring out drawn spokes)
     var startx = 750, starty = 320;
 
@@ -78,7 +80,7 @@ window.onload = function () {
     var params = { fullscreen: true }
     var two = new Two(params).appendTo(elem);
 
-    drawCircle(two, center.x, center.y, rim);
+    var c = drawCircle(two, center.x, center.y, rim);
     drawCircle(two, center.x, center.y, hub);
     drawUnusedSpokes(two, 750, 320, 1, 16, 'black');
     drawUnusedSpokes(two, 750, 650, 17, 32, 'black');
@@ -97,13 +99,30 @@ window.onload = function () {
     }
     
     function addSpoke(e){
-        if(drawn < p.length){
-            drawSpoke(two, hub, rim, drawn,'blue');
-            drawUnusedSpoke(two, startx, starty, spokeLength, 'white');
-            startx = startx + 18;
+        var KeyID = event.keyCode;
+
+        switch(KeyID)
+        {
+            case 32: // space
+            if(drawn < p.length){
+                spokes.push(drawSpoke(two, hub, rim, drawn,'blue'));
+                //drawUnusedSpoke(two, startx, starty, spokeLength, 'white');
+                two.remove(unusedSpokes.shift());
+                startx = startx + 18;
+            }
+            two.update();
+            drawn = drawn + 1;
+            break;
+
+            case 8: // back space
+            if(drawn > 0){
+                two.remove(spokes.pop());
+            }
+            two.update();
+            drawn = drawn - 1;
+            break;
         }
-        two.update();
-        drawn = drawn + 1;
+
     }
 
     function drawSpoke(two, circle1, circle2, i, color) {
@@ -112,6 +131,7 @@ window.onload = function () {
         var group = two.makeGroup(spoke,spokeEnd);
         group.fill = color;
         group.stroke = color;
+        return group;
     }
  
     function drawUnusedSpoke(two, x, y, length, color) {
@@ -121,11 +141,12 @@ window.onload = function () {
         var group = two.makeGroup(spoke, spokeEnd);
         group.stroke = color;
         group.fill = color;
+        return group;
     }
 
     function drawUnusedSpokes(two, startX, startY, from, to, color) {
         for (var i = from; i <= to; i++) {
-            drawUnusedSpoke(two, startX, startY, spokeLength, color);
+            unusedSpokes.push(drawUnusedSpoke(two, startX, startY, spokeLength, color));
             var text = two.makeText(i, startX, startY + 20, {
                 alignment: 'center'
             });
