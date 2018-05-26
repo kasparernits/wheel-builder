@@ -1,8 +1,20 @@
 window.onload = function () {
 
+    // Set up the environment
+    var elem = document.getElementById('workshop');
+    var params = { fullscreen: true }
+    var two = new Two(params).appendTo(elem);
+    
+    window.addEventListener("keydown", addSpoke, false);
+
+    const center = { x: 350, y: 350 };
+
     var drawn = 0;
-    var spokes = []; // Holds array of drawn spokes
+    var spokes = [];
     var unusedSpokes = [];
+
+    var spokeWidth = 2;
+    var spokeLength = 280;
 
     // This is ugly, fix it later (for coloring out drawn spokes)
     var startx = 750, starty = 320;
@@ -31,7 +43,6 @@ window.onload = function () {
         // Side 2 ...
     ];
     
-    const center = { x: 350, y: 350 };
 
     class hole {
         constructor(id, x, y){
@@ -73,19 +84,11 @@ window.onload = function () {
     for(i=0;i<rim.numOfHoles;i++)
         rim.addHole(new hole(i,rim.calcHoleCoords(i-rim.numOfHoles/4).newX, rim.calcHoleCoords(i-rim.numOfHoles/4).newY));
 
-    var spokeWidth = 2;
-    var spokeLength = 280;
-
-    var elem = document.getElementById('workshop');
-    var params = { fullscreen: true }
-    var two = new Two(params).appendTo(elem);
-
-    var c = drawCircle(two, center.x, center.y, rim);
+    drawCircle(two, center.x, center.y, rim);
     drawCircle(two, center.x, center.y, hub);
+
     drawUnusedSpokes(two, 750, 320, 1, 16, 'black');
     drawUnusedSpokes(two, 750, 650, 17, 32, 'black');
-
-    window.addEventListener("keydown", addSpoke, false);
 
     two.update();
 
