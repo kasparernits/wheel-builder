@@ -1,10 +1,10 @@
 window.onload = function () {
 
     var drawn = 0;
-    var spokes = [];
+    var spokes = []; // Holds array of drawn spokes
     var unusedSpokes = [];
 
-    // ugly, fix later (for coloring out drawn spokes)
+    // This is ugly, fix it later (for coloring out drawn spokes)
     var startx = 750, starty = 320;
 
     // 3 cross pattern
@@ -103,18 +103,21 @@ window.onload = function () {
 
         switch(KeyID)
         {
-            case 32: // space
+            case 32: // Space Key, add new spoke
             if(drawn < p.length){
-                spokes.push(drawSpoke(two, hub, rim, drawn,'blue'));
-                //drawUnusedSpoke(two, startx, starty, spokeLength, 'white');
+                spokes.push(drawSpoke(two, hub, rim, drawn,'red'));
                 two.remove(unusedSpokes.shift());
                 startx = startx + 18;
+                for(i=0;i<spokes.length-1;i++){
+                    spokes[i].stroke = 'gray';
+                    spokes[i].fill = 'gray'
+                }        
             }
             two.update();
             drawn = drawn + 1;
             break;
 
-            case 8: // back space
+            case 8: // Back Space, remove a spoke
             if(drawn > 0){
                 two.remove(spokes.pop());
             }
